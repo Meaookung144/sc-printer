@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String @id @default(cuid())
+  email    String @unique
+  name     String
+  image    String?
+  
+  printJobs PrintJob[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model PrintJob {
+  id          String @id @default(cuid())
+  userId      String
+  fileName    String
+  originalName String
+  filePath    String
+  fileSize    Int
+  fileType    String
+  
+  copies      Int @default(1)
+  isDraft     Boolean @default(false)
+  isColor     Boolean @default(false)
+  orientation String @default("portrait")
+  pages       String? // "all" or "1-3,5,7-10"
+  
+  printerName String
+  status      String @default("pending") // pending, printing, completed, failed
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("print_jobs")
+}
+
+model Printer {
+  id         String  @id @default(cuid())
+  name       String  @unique
+  isOnline   Boolean @default(false)
+  driverName String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("printers")
+}
