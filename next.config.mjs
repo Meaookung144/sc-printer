@@ -8,6 +8,10 @@ const nextConfig = {
       sizeLimit: '10mb',
     },
   },
+  output: 'standalone',
+  images: {
+    domains: ['lh3.googleusercontent.com'],
+  },
 }
 
 export default nextConfig
