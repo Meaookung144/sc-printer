@@ -55,6 +55,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - NODE_ENV=production
     container_name: sc-printer-web
     restart: unless-stopped
     ports:

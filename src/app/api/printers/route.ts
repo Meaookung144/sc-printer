@@ -2,7 +2,19 @@ import { NextResponse } from 'next/server'
 
 export async function GET() {
   try {
-    const pythonResponse = await fetch('http://localhost:8000/printers')
+    // During build time, return mock printers
+    if (process.env.NODE_ENV !== 'production' && !process.env.PYTHON_API_URL) {
+      return NextResponse.json({
+        printers: [
+          { id: 'mock-printer', name: 'Mock Printer', isOnline: true, driverName: 'Mock Driver' }
+        ]
+      })
+    }
+
+    const apiUrl = process.env.PYTHON_API_URL || 'http://localhost:8000'
+    const pythonResponse = await fetch(`${apiUrl}/printers`, {
+      signal: AbortSignal.timeout(5000) // 5 second timeout
+    })
     
     if (!pythonResponse.ok) {
       throw new Error('Python printer service unavailable')
@@ -13,9 +25,11 @@ export async function GET() {
     return NextResponse.json(printers)
   } catch (error) {
     console.error('Printers API error:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch printers' },
-      { status: 500 }
-    )
+    
+    // Return empty printers list instead of error during build
+    return NextResponse.json({
+      printers: [],
+      error: 'Printer service unavailable'
+    })
   }
 }

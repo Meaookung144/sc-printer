@@ -212,40 +212,44 @@ export function PrintUpload({ printers, onClose }: PrintUploadProps) {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Copies: {settings.copies}
+                  Copies
                 </label>
-                <Slider.Root
-                  value={[settings.copies]}
-                  onValueChange={([value]) => setSettings(s => ({ ...s, copies: value }))}
-                  max={10}
-                  min={1}
-                  step={1}
-                  className="relative flex items-center select-none touch-none w-full h-5"
-                >
-                  <Slider.Track className="bg-gray-200 dark:bg-gray-600 relative grow rounded-full h-1">
-                    <Slider.Range className="absolute bg-red-500 rounded-full h-full" />
-                  </Slider.Track>
-                  <Slider.Thumb className="block w-5 h-5 bg-white shadow-lg border border-gray-300 rounded-full hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-red-500" />
-                </Slider.Root>
+                <input
+                  type="number"
+                  min="1"
+                  max="10"
+                  value={settings.copies}
+                  onChange={(e) => setSettings(s => ({ ...s, copies: parseInt(e.target.value) || 1 }))}
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                />
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Color Mode
+                  </label>
+                  <Select.Root value={settings.isColor ? "color" : "blackwhite"} onValueChange={(value) => setSettings(s => ({ ...s, isColor: value === "color" }))}>
+                    <Select.Trigger className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                      <Select.Value />
+                      <Select.Icon />
+                    </Select.Trigger>
+                    <Select.Content className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg">
+                      <Select.Item value="blackwhite" className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                        <Select.ItemText>Black & White</Select.ItemText>
+                      </Select.Item>
+                      <Select.Item value="color" className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer">
+                        <Select.ItemText>Color</Select.ItemText>
+                      </Select.Item>
+                    </Select.Content>
+                  </Select.Root>
+                </div>
+
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Draft Mode</label>
                   <Switch.Root
                     checked={settings.isDraft}
                     onCheckedChange={(checked) => setSettings(s => ({ ...s, isDraft: checked }))}
-                    className="w-11 h-6 bg-gray-200 dark:bg-gray-600 rounded-full relative data-[state=checked]:bg-red-500"
-                  >
-                    <Switch.Thumb className="block w-4 h-4 bg-white rounded-full shadow-lg translate-x-1 will-change-transform data-[state=checked]:translate-x-6 transition-transform" />
-                  </Switch.Root>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Color Print</label>
-                  <Switch.Root
-                    checked={settings.isColor}
-                    onCheckedChange={(checked) => setSettings(s => ({ ...s, isColor: checked }))}
                     className="w-11 h-6 bg-gray-200 dark:bg-gray-600 rounded-full relative data-[state=checked]:bg-red-500"
                   >
                     <Switch.Thumb className="block w-4 h-4 bg-white rounded-full shadow-lg translate-x-1 will-change-transform data-[state=checked]:translate-x-6 transition-transform" />
